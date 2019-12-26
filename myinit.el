@@ -1,5 +1,8 @@
 ;; [[file:~/.emacs.d/myinit.org::*Repository][Repository:1]]
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/")
+                               '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
+(package-refresh-contents)
 ;; Repository:1 ends here
 
 ;; [[file:~/.emacs.d/myinit.org::*Interface][Interface:1]]
@@ -8,6 +11,13 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (global-set-key (kbd "<f5>") 'revert-buffer)
 ;; Interface:1 ends here
+
+;; [[file:~/.emacs.d/myinit.org::*Theme][Theme:1]]
+(use-package zenburn-theme
+:ensure t
+:config
+(load-theme 'zenburn t))
+;; Theme:1 ends here
 
 ;; [[file:~/.emacs.d/myinit.org::*Try][Try:1]]
 (use-package try
@@ -26,6 +36,15 @@
 :ensure t
 :config 
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+(org-babel-do-load-languages
+'org-babel-load-languages
+'(
+  (C . t)
+  (emacs-lisp . t)
+  (js . t)
+  (python . t)
+  ))
 ;; Org-mode:1 ends here
 
 ;; [[file:~/.emacs.d/myinit.org::*Swiper%20/%20Ivy%20/%20Counsel][Swiper / Ivy / Counsel:1]]
@@ -77,12 +96,11 @@
 
 ;; [[file:~/.emacs.d/myinit.org::*Yasnippet][Yasnippet:1]]
 (use-package yasnippet
-      :ensure t
-      :init
-        (yas-global-mode 1))
-
-;    (use-package yasnippet-snippets
-;      :ensure t)
+  :ensure t
+  :init
+    (yas-global-mode 1))
+(use-package yasnippet-snippets
+  :ensure t)
 ;; Yasnippet:1 ends here
 
 ;; [[file:~/.emacs.d/myinit.org::*Undo%20Tree][Undo Tree:1]]
@@ -179,3 +197,8 @@
 ;; Don't ask for confirmation to delete marked buffers
 (setq ibuffer-expert t)
 ;; IBuffer:1 ends here
+
+;; [[file:~/.emacs.d/myinit.org::*Rust][Rust:1]]
+(use-package rust-mode
+:ensure t)
+;; Rust:1 ends here
