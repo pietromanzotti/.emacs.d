@@ -14,8 +14,17 @@
   #+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-message t)
   (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (toggle-scroll-bar -1)
+  (toggle-frame-fullscreen)
   (fset 'yes-or-no-p 'y-or-n-p)
   (global-set-key (kbd "<f5>") 'revert-buffer)
+  (delete-other-windows)
+  (split-window-right)
+  (windmove-right)
+  (split-window-below)
+  (windmove-down)
+  (eshell)
   #+END_SRC
 
 * Theme
@@ -161,16 +170,13 @@
       :ensure t
       :config
 	   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-	   (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
 	   (setq web-mode-engines-alist
 		 '(("django"    . "\\.html\\'")))
 	   (setq web-mode-ac-sources-alist
 	   '(("css" . (ac-source-css-property))
-	   ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
            ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
   (setq web-mode-enable-auto-closing t))
   (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
-
 
   #+END_SRC
 
@@ -260,4 +266,100 @@
   #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
   :ensure t)
+  #+END_SRC
+
+* Clojure/ClojureScript
+  #+BEGIN_SRC emacs-lisp
+(use-package clojure-mode
+  :ensure t
+  :mode (("\\.clj\\'" . clojure-mode)
+         ("\\.edn\\'" . clojure-mode))
+  :init
+  (add-hook 'clojure-mode-hook #'yas-minor-mode)         
+  (add-hook 'clojure-mode-hook #'linum-mode)             
+  (add-hook 'clojure-mode-hook #'subword-mode)           
+  (add-hook 'clojure-mode-hook #'smartparens-mode)       
+  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'clojure-mode-hook #'eldoc-mode)             
+  (add-hook 'clojure-mode-hook #'idle-highlight-mode))
+
+(use-package cider
+  :ensure t
+  :defer t
+  :init (add-hook 'cider-mode-hook #'clj-refactor-mode)
+  :diminish subword-mode
+  :config
+  (setq nrepl-log-messages t                  
+        cider-repl-display-in-current-window t
+        cider-repl-use-clojure-font-lock t    
+        cider-prompt-save-file-on-load 'always-save
+        cider-font-lock-dynamically '(macro core function var)
+        nrepl-hide-special-buffers t            
+        cider-overlays-use-font-lock t)         
+  (cider-repl-toggle-pretty-printing))
+
+(use-package smartparens-config
+  :ensure smartparens
+  :config (progn (show-smartparens-global-mode t)))
+
+(add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+(add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
+
+(use-package cider-eval-sexp-fu
+  :defer t)
+
+(use-package clj-refactor
+  :defer t
+  :ensure t
+  :diminish clj-refactor-mode
+  :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+
+(bind-keys
+ :map smartparens-mode-map
+ ("C-M-a" . sp-beginning-of-sexp)
+ ("C-M-e" . sp-end-of-sexp)
+
+ ("C-<down>" . sp-down-sexp)
+ ("C-<up>"   . sp-up-sexp)
+ ("M-<down>" . sp-backward-down-sexp)
+ ("M-<up>"   . sp-backward-up-sexp)
+
+ ("C-M-f" . sp-forward-sexp)
+ ("C-M-b" . sp-backward-sexp)
+
+ ("C-M-n" . sp-next-sexp)
+ ("C-M-p" . sp-previous-sexp)
+
+ ("C-S-f" . sp-forward-symbol)
+ ("C-S-b" . sp-backward-symbol)
+
+ ("C-<right>" . sp-forward-slurp-sexp)
+ ("M-<right>" . sp-forward-barf-sexp)
+ ("C-<left>"  . sp-backward-slurp-sexp)
+ ("M-<left>"  . sp-backward-barf-sexp)
+
+ ("C-M-t" . sp-transpose-sexp)
+ ("C-M-k" . sp-kill-sexp)
+ ("C-k"   . sp-kill-hybrid-sexp)
+ ("M-k"   . sp-backward-kill-sexp)
+ ("C-M-w" . sp-copy-sexp)
+ ("C-M-d" . delete-sexp)
+
+ ("M-<backspace>" . backward-kill-word)
+ ("C-<backspace>" . sp-backward-kill-word)
+ ([remap sp-backward-kill-word] . backward-kill-word)
+
+ ("M-[" . sp-backward-unwrap-sexp)
+ ("M-]" . sp-unwrap-sexp)
+
+ ("C-x C-t" . sp-transpose-hybrid-sexp)
+
+ ("C-c ("  . wrap-with-parens)
+ ("C-c ["  . wrap-with-brackets)
+ ("C-c {"  . wrap-with-braces)
+ ("C-c '"  . wrap-with-single-quotes)
+ ("C-c \"" . wrap-with-double-quotes)
+ ("C-c _"  . wrap-with-underscores)
+ ("C-c `"  . wrap-with-back-quotes))
+
   #+END_SRC
