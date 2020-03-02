@@ -175,6 +175,7 @@
                ("org" (name . "^.*org$"))
                ("magit" (mode . magit-mode))
                ("IRC" (or (mode . circe-channel-mode) (mode . circe-server-mode)))
+
                ("web" (or (mode . web-mode) (mode . js2-mode)))
                ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
                ("mu4e" (or
@@ -186,7 +187,8 @@
                                (mode . clojure-mode)
                                (mode . clojurescript-mode)
                                (mode . python-mode)
-                               (mode . c++-mode)))
+                               (mode . c++-mode)
+			       (mode . nim-mode)))
                ("emacs" (or
                          (name . "^\\*scratch\\*$")
                          (name . "^\\*Messages\\*$")))
@@ -204,6 +206,27 @@
 ;; Don't ask for confirmation to delete marked buffers
 (setq ibuffer-expert t)
 ;; IBuffer:1 ends here
+
+;; [[file:~/.emacs.d/myinit.org::*Magit][Magit:1]]
+(use-package magit
+ :ensure t
+ :init
+ (progn
+ (bind-key "C-x g" 'magit-status)
+ ))
+
+ (setq magit-status-margin
+ '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
+
+ (use-package git-gutter
+ :ensure t
+ :init
+ (global-git-gutter-mode +1))
+
+ (use-package git-timemachine
+ :ensure t
+ )
+;; Magit:1 ends here
 
 ;; [[file:~/.emacs.d/myinit.org::*Rust][Rust:1]]
 (use-package rust-mode
@@ -303,3 +326,8 @@
  ("C-c _"  . wrap-with-underscores)
  ("C-c `"  . wrap-with-back-quotes))
 ;; Clojure/ClojureScript:1 ends here
+
+;; [[file:~/.emacs.d/myinit.org::*Nim][Nim:1]]
+(use-package nim-mode
+:ensure t)
+;; Nim:1 ends here

@@ -244,7 +244,8 @@
                                  (mode . clojure-mode)
                                  (mode . clojurescript-mode)
                                  (mode . python-mode)
-                                 (mode . c++-mode)))
+                                 (mode . c++-mode)
+				 (mode . nim-mode)))
                  ("emacs" (or
                            (name . "^\\*scratch\\*$")
                            (name . "^\\*Messages\\*$")))
@@ -263,6 +264,28 @@
   (setq ibuffer-expert t)
 
 #+END_SRC
+* Magit
+  #+BEGIN_SRC emacs-lisp
+   (use-package magit
+    :ensure t
+    :init
+    (progn
+    (bind-key "C-x g" 'magit-status)
+    ))
+
+    (setq magit-status-margin
+    '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
+    
+    (use-package git-gutter
+    :ensure t
+    :init
+    (global-git-gutter-mode +1))
+
+    (use-package git-timemachine
+    :ensure t
+    )
+  #+END_SRC
+
 * Rust
   #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
@@ -363,4 +386,9 @@
  ("C-c _"  . wrap-with-underscores)
  ("C-c `"  . wrap-with-back-quotes))
 
+  #+END_SRC
+* Nim
+  #+BEGIN_SRC emacs-lisp
+  (use-package nim-mode
+  :ensure t)
   #+END_SRC
