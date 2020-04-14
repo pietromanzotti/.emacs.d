@@ -1,6 +1,9 @@
 ;; [[file:~/.emacs.d/myinit.org::*Repository][Repository:1]]
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/")
-                               '("melpa" . "https://melpa.org/packages/"))
+(setq package-archives
+    '(("gnu" . "https://elpa.gnu.org/packages/")
+      ("marmalade" . "https://marmalade-repo.org/packages/")
+      ("melpa" . "https://melpa.org/packages/")
+      ("org" . "https://orgmode.org/elpa/")))
 (package-initialize)
 (package-refresh-contents)
 ;; Repository:1 ends here
@@ -16,10 +19,18 @@
 (delete-other-windows)
 (split-window-right)
 (windmove-right)
-(split-window-below)
-(windmove-down)
-(eshell)
+(dired "~/")
+(windmove-left)
 ;; Interface:1 ends here
+
+;; [[file:~/.emacs.d/myinit.org::*Backup%20Emacs][Backup Emacs:1]]
+(setq backup-directory-alist `(("." . "~/.emacs-backups")))
+(setq backup-by-copying t)
+(setq delete-old-versions t
+  kept-new-versions 6
+  kept-old-versions 2
+  version-control t)
+;; Backup Emacs:1 ends here
 
 ;; [[file:~/.emacs.d/myinit.org::*Theme][Theme:1]]
 (use-package zenburn-theme
@@ -46,14 +57,15 @@
 :config 
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-(org-babel-do-load-languages
-'org-babel-load-languages
-'(
-  (C . t)
+
+(org-babel-do-load-languages 'org-babel-load-languages
+'((C . t)
   (emacs-lisp . t)
+  (clojure . t)
+  (java . t)
   (js . t)
   (python . t)
-  ))
+  (sql . t)))
 ;; Org-mode:1 ends here
 
 ;; [[file:~/.emacs.d/myinit.org::*Swiper%20/%20Ivy%20/%20Counsel][Swiper / Ivy / Counsel:1]]
@@ -77,10 +89,10 @@
 (use-package swiper
 :ensure t
 :bind (("C-s" . swiper-isearch)
-       ("C-r" . swiper-isearch)
-       ("C-c C-r" . ivy-resume)
-       ("M-x" . counsel-M-x)
-       ("C-x C-f" . counsel-find-file))
+("C-r" . swiper-isearch)
+("C-c C-r" . ivy-resume)
+("M-x" . counsel-M-x)
+("C-x C-f" . counsel-find-file))
 :config
 (progn
   (ivy-mode 1)
@@ -95,6 +107,17 @@
 :ensure t
 :bind ("C-M-s" . avy-goto-word-1)) ;; changed from char as per jcs
 ;; Avy:1 ends here
+
+;; [[file:~/.emacs.d/myinit.org::*Auto%20Complete][Auto Complete:1]]
+(use-package company
+:ensure t
+:config
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 3)
+
+(global-company-mode t)
+)
+;; Auto Complete:1 ends here
 
 ;; [[file:~/.emacs.d/myinit.org::*Flycheck][Flycheck:1]]
 (use-package flycheck
@@ -229,15 +252,46 @@
 ;; Magit:1 ends here
 
 ;; [[file:~/.emacs.d/myinit.org::*Rust][Rust:1]]
+;; don't forget to install racer:
+;; rustup toolchain add nightly
+;; cargo +nightly install racer
+;; rustup component add rust-src
+;; rustup component add rustfmt
+(use-package racer
+:ensure t
+:config
+(add-hook 'racer-mode-hook #'company-mode)
+(setq company-tooltip-align-annotations t)
+(setq racer-rust-src-path "~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src"))
+
 (use-package rust-mode
-:ensure t)
+:ensure t
+:config
+(add-hook 'rust-mode-hook #'racer-mode)
+(add-hook 'racer-mode-hook #'eldoc-mode)
+(setq rust-format-on-save t))
+
+(use-package cargo
+:ensure t
+:config
+(setq compilation-scroll-output t)
+(add-hook 'rust-mode-hook 'cargo-minor-mode))
+
+(use-package flycheck-rust
+:ensure t
+:config
+(add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
+(add-hook 'rust-mode-hook 'flycheck-mode))
+
+(define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
 ;; Rust:1 ends here
 
 ;; [[file:~/.emacs.d/myinit.org::*Clojure/ClojureScript][Clojure/ClojureScript:1]]
 (use-package clojure-mode
   :ensure t
   :mode (("\\.clj\\'" . clojure-mode)
-         ("\\.edn\\'" . clojure-mode))
+         ("\\.edn\\'" . clojure-mode)
+	 ("\\.boot\\'" . clojure-mode))
   :init
   (add-hook 'clojure-mode-hook #'yas-minor-mode)         
   (add-hook 'clojure-mode-hook #'linum-mode)             
@@ -326,8 +380,3 @@
  ("C-c _"  . wrap-with-underscores)
  ("C-c `"  . wrap-with-back-quotes))
 ;; Clojure/ClojureScript:1 ends here
-
-;; [[file:~/.emacs.d/myinit.org::*Nim][Nim:1]]
-(use-package nim-mode
-:ensure t)
-;; Nim:1 ends here
