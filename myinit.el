@@ -4,7 +4,6 @@
       ("marmalade" . "https://marmalade-repo.org/packages/")
       ("melpa" . "https://melpa.org/packages/")
       ("org" . "https://orgmode.org/elpa/")))
-(package-initialize)
 (package-refresh-contents)
 ;; Repository:1 ends here
 
@@ -21,9 +20,12 @@
 (windmove-right)
 (dired "~/")
 (windmove-left)
+(setq-default truncate-lines t) 
+(setq truncate-partial-width-windows nil)
+(global-set-key (kbd "<f12>") 'toggle-truncate-lines)
 ;; Interface:1 ends here
 
-;; [[file:~/.emacs.d/myinit.org::*Backup%20Emacs][Backup Emacs:1]]
+;; [[file:~/.emacs.d/myinit.org::*Backup Emacs][Backup Emacs:1]]
 (setq backup-directory-alist `(("." . "~/.emacs-backups")))
 (setq backup-by-copying t)
 (setq delete-old-versions t
@@ -44,7 +46,7 @@
 :ensure t)
 ;; Try:1 ends here
 
-;; [[file:~/.emacs.d/myinit.org::*Which%20Key][Which Key:1]]
+;; [[file:~/.emacs.d/myinit.org::*Which Key][Which Key:1]]
 (use-package which-key
 :ensure t 
 :config
@@ -68,7 +70,7 @@
   (sql . t)))
 ;; Org-mode:1 ends here
 
-;; [[file:~/.emacs.d/myinit.org::*Swiper%20/%20Ivy%20/%20Counsel][Swiper / Ivy / Counsel:1]]
+;; [[file:~/.emacs.d/myinit.org::*Swiper / Ivy / Counsel][Swiper / Ivy / Counsel:1]]
 (use-package counsel
 :ensure t
 :bind
@@ -108,7 +110,7 @@
 :bind ("C-M-s" . avy-goto-word-1)) ;; changed from char as per jcs
 ;; Avy:1 ends here
 
-;; [[file:~/.emacs.d/myinit.org::*Auto%20Complete][Auto Complete:1]]
+;; [[file:~/.emacs.d/myinit.org::*Auto Complete][Auto Complete:1]]
 (use-package company
 :ensure t
 :config
@@ -135,14 +137,14 @@
   :ensure t)
 ;; Yasnippet:1 ends here
 
-;; [[file:~/.emacs.d/myinit.org::*Undo%20Tree][Undo Tree:1]]
+;; [[file:~/.emacs.d/myinit.org::*Undo Tree][Undo Tree:1]]
 (use-package undo-tree
   :ensure t
   :init
   (global-undo-tree-mode))
 ;; Undo Tree:1 ends here
 
-;; [[file:~/.emacs.d/myinit.org::*Web%20Mode][Web Mode:1]]
+;; [[file:~/.emacs.d/myinit.org::*Web Mode][Web Mode:1]]
 (use-package web-mode
     :ensure t
     :config
@@ -156,7 +158,7 @@
 (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
 ;; Web Mode:1 ends here
 
-;; [[file:~/.emacs.d/myinit.org::*Emmet%20mode][Emmet mode:1]]
+;; [[file:~/.emacs.d/myinit.org::*Emmet mode][Emmet mode:1]]
 (use-package emmet-mode
 :ensure t
 :config
@@ -380,3 +382,9 @@
  ("C-c _"  . wrap-with-underscores)
  ("C-c `"  . wrap-with-back-quotes))
 ;; Clojure/ClojureScript:1 ends here
+
+;; [[file:~/.emacs.d/myinit.org::*org-cv][org-cv:1]]
+(use-package ox-moderncv
+    :load-path "/home/pietromanzotti/org-cv/"
+    :init (require 'ox-moderncv))
+;; org-cv:1 ends here
